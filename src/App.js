@@ -1,17 +1,20 @@
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { Header } from './components/index';
+import { Home, NotFound, Login, Register, ResetPassword } from './pages/index'
 function App() {
   return (
     <>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <main>This app is using the dark mode</main>
-      </ThemeProvider>
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/reset-password' element={<ResetPassword />} />
+          <Route path='/notFound' element={<NotFound />} />
+          <Route path='/*' element={<NotFound />} />
+        </Routes>
+      </Router>
     </>
   )
 }
