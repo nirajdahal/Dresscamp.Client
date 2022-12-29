@@ -1,8 +1,25 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { signOutUser } from '../../services/AuthService'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { ProcessLoginState } from '../../utils/AuthUtils'
 function Header() {
+    const navigate = useNavigate()
+    const [user, setUser] = useState("")
+    ProcessLoginState()
+    const handleLogout = async () => {
+        try {
+            await signOutUser()
+            toast.success("Logged out successfully")
+            navigate("/")
+        }
+        catch (error) {
+            toast.error(error.message)
+        }
+    }
     return (
         <div className="navbar bg-base-100">
+            <h1>{user}</h1>
             <div className="flex-1">
                 <Link to={"/"} className="btn btn-ghost normal-case text-xl">DressCamp</Link>
             </div>
@@ -36,18 +53,18 @@ function Header() {
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
-                            <img src="https://placeimg.com/80/80/people" />
+                            <img alt="img" src="https://placeimg.com/80/80/people" />
                         </div>
                     </label>
                     <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
                         <li>
-                            <a className="justify-between">
+                            <button className="justify-between">
                                 Profile
                                 <span className="badge">New</span>
-                            </a>
+                            </button>
                         </li>
-                        <li><a>Settings</a></li>
-                        <li><a>Logout</a></li>
+                        <li><button>Settings</button></li>
+                        <li> <button onClick={handleLogout}>Logout</button></li>
                     </ul>
                 </div>
             </div>

@@ -1,11 +1,25 @@
-import React from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify';
+import { resetPasswordWithEmail } from '../../services/AuthService'
 function ResetPassword() {
+    const [email, setEmail] = useState('')
+    const handleResetPassword = async (e) => {
+        e.preventDefault()
+        console.log(email)
+        try {
+            await resetPasswordWithEmail(email)
+            toast.success("Check your email for further instructions")
+        } catch (error) {
+            toast.error(error.message)
+            console.log(error)
+        }
+    }
     return (
         <>
             <h1>Reset Password</h1>
-            <form>
-                <input className="input input-bordered w-full max-w-xs" type="text" placeholder="Email" />
+            <form onSubmit={handleResetPassword}>
+                <input value={email} onChange={(e) => setEmail(e.target.value)} className="input input-bordered w-full max-w-xs" type="text" placeholder="Email" />
                 <br />
                 <button className='btn btn-primary'>Reset </button>
                 <br />
