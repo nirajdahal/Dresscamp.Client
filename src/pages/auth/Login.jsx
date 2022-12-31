@@ -1,14 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { signInUsingEmailAndPassword, signWithGoogle } from '../../services/AuthService'
 import { useNavigate } from 'react-router-dom';
-import { GoogleAuthProvider } from "firebase/auth"
+import { useSelector } from 'react-redux'
+import { selectIsLoggedIn } from '../../redux/slice/authSlice';
+import { useDispatch } from 'react-redux';
+import { SET_SHOW_LOADING, SET_REMOVE_LOADING } from '../../redux/slice/loadingSlice';
 function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const isLoggedIn = useSelector(selectIsLoggedIn)
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate("/")
+        }
+    })
     const hangleSignInWithGoogle = async () => {
+        dispatch(SET_SHOW_LOADING())
         try {
             const result = await signWithGoogle()
             console.log(result)
@@ -17,9 +28,11 @@ function Login() {
             toast.error(error.message)
             console.log(error.message)
         }
+        dispatch(SET_REMOVE_LOADING())
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
+        dispatch(SET_SHOW_LOADING())
         try {
             const userCredential = await signInUsingEmailAndPassword(email, password)
             console.log("userCredentials from login component", userCredential)
@@ -29,6 +42,7 @@ function Login() {
         catch (error) {
             toast.error(error.message)
         }
+        dispatch(SET_REMOVE_LOADING())
     }
     return (
         <>

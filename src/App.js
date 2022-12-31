@@ -3,9 +3,13 @@ import { Header, Loader } from './components/index';
 import { Home, NotFound, Login, Register, ResetPassword } from './pages/index'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux'
+import { selectIsLoading } from '../src/redux/slice/loadingSlice'
 function App() {
+  const isLoading = useSelector(selectIsLoading)
   return (
     <>
+      {isLoading && <Loader />}
       <ToastContainer />
       <Router>
         {/* <Loader /> */}

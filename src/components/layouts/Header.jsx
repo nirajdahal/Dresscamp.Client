@@ -3,35 +3,57 @@ import { signOutUser } from '../../services/AuthService'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ProcessLoginState } from '../../utils/AuthUtils'
+import { useDispatch } from 'react-redux'
+import { REMOVE_ACTIVE_USER } from '../../redux/slice/authSlice'
+import { selectUserName } from '../../redux/slice/authSlice'
+import { useSelector } from 'react-redux'
+import { ShowOnLogin, ShowOnLogout } from '../hiddenLink/hiddenLink'
+import { AdminOnlyRoute } from '../adminOnlyRoute/AdminOnlyRoute'
+import { SET_SHOW_LOADING, SET_REMOVE_LOADING } from '../../redux/slice/loadingSlice'
 function Header() {
-    const navigate = useNavigate()
-    const [user, setUser] = useState("")
     ProcessLoginState()
+    const user = useSelector(selectUserName)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    useEffect(() => {
+        console.log("user", user)
+    }, [])
     const handleLogout = async () => {
+        dispatch(SET_SHOW_LOADING())
         try {
             await signOutUser()
+            dispatch(REMOVE_ACTIVE_USER())
             toast.success("Logged out successfully")
             navigate("/")
         }
         catch (error) {
             toast.error(error.message)
         }
+        dispatch(SET_REMOVE_LOADING())
     }
     return (
         <div className="navbar bg-base-100">
-            <h1>{user}</h1>
             <div className="flex-1">
                 <Link to={"/"} className="btn btn-ghost normal-case text-xl">DressCamp</Link>
             </div>
-            <div className="flex">
-                <Link to="/order-history" className="btn btn-ghost normal-case text-xl">Orders</Link>
-            </div>
-            <div className="flex">
-                <Link to="/login" className="btn btn-ghost normal-case text-xl">Login</Link>
-            </div>
-            <div className="flex">
-                <Link to="/register" className="btn btn-ghost normal-case text-xl">Register</Link>
-            </div>
+            <ShowOnLogin>
+                <div className="flex">
+                    <Link to="/order-history" className="btn btn-ghost normal-case text-xl">Orders</Link>
+                </div>
+            </ShowOnLogin>
+            <AdminOnlyRoute>
+                <div className="flex">
+                    <Link to="/order-history" className="btn btn-ghost normal-case text-xl">Admin</Link>
+                </div>
+            </AdminOnlyRoute>
+            <ShowOnLogout>
+                <div className="flex">
+                    <Link to="/login" className="btn btn-ghost normal-case text-xl">Login</Link>
+                </div>
+                <div className="flex">
+                    <Link to="/register" className="btn btn-ghost normal-case text-xl">Register</Link>
+                </div>
+            </ShowOnLogout>
             <div className="flex-none">
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle">
@@ -50,23 +72,25 @@ function Header() {
                         </div>
                     </div>
                 </div>
-                <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                        <div className="w-10 rounded-full">
-                            <img alt="img" src="https://placeimg.com/80/80/people" />
-                        </div>
-                    </label>
-                    <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                        <li>
-                            <button className="justify-between">
-                                Profile
-                                <span className="badge">New</span>
-                            </button>
-                        </li>
-                        <li><button>Settings</button></li>
-                        <li> <button onClick={handleLogout}>Logout</button></li>
-                    </ul>
-                </div>
+                <ShowOnLogin>
+                    <div className="dropdown dropdown-end">
+                        <label tabIndex={0} className="btn btn-ghost btn-circle ">
+                            <div className="w-10 rounded-full">
+                                <h1>{user ? user[0] : ''}</h1>
+                            </div>
+                        </label>
+                        <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                            <li>
+                                <button className="justify-between">
+                                    Profile
+                                    <span className="badge">New</span>
+                                </button>
+                            </li>
+                            <li><button>Settings</button></li>
+                            <li> <button onClick={handleLogout}>Logout</button></li>
+                        </ul>
+                    </div>
+                </ShowOnLogin>
             </div>
         </div>
     )
