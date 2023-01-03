@@ -8,16 +8,13 @@ import { REMOVE_ACTIVE_USER } from '../../redux/slice/authSlice'
 import { selectUserName } from '../../redux/slice/authSlice'
 import { useSelector } from 'react-redux'
 import { ShowOnLogin, ShowOnLogout } from '../hiddenLink/hiddenLink'
-import { AdminOnlyRoute } from '../adminOnlyRoute/AdminOnlyRoute'
+import { AdminOnlyLink } from '../adminOnlyRoute/AdminOnlyLink'
 import { SET_SHOW_LOADING, SET_REMOVE_LOADING } from '../../redux/slice/loadingSlice'
 function Header() {
     ProcessLoginState()
     const user = useSelector(selectUserName)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    useEffect(() => {
-        console.log("user", user)
-    }, [])
     const handleLogout = async () => {
         dispatch(SET_SHOW_LOADING())
         try {
@@ -41,11 +38,11 @@ function Header() {
                     <Link to="/order-history" className="btn btn-ghost normal-case text-xl">Orders</Link>
                 </div>
             </ShowOnLogin>
-            <AdminOnlyRoute>
+            <AdminOnlyLink>
                 <div className="flex">
-                    <Link to="/order-history" className="btn btn-ghost normal-case text-xl">Admin</Link>
+                    <Link to="/admin" className="btn btn-ghost normal-case text-xl">Admin</Link>
                 </div>
-            </AdminOnlyRoute>
+            </AdminOnlyLink>
             <ShowOnLogout>
                 <div className="flex">
                     <Link to="/login" className="btn btn-ghost normal-case text-xl">Login</Link>

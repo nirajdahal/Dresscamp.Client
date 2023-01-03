@@ -47,7 +47,6 @@ export const resetPasswordWithEmail = async (email) => {
 }
 export const isUserLoggedIn = () => {
     const user = auth.currentUser;
-    console.log(user)
     if (user) {
         return true
     } else {

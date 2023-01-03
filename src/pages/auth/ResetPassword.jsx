@@ -6,13 +6,11 @@ function ResetPassword() {
     const [email, setEmail] = useState('')
     const handleResetPassword = async (e) => {
         e.preventDefault()
-        console.log(email)
         try {
             await resetPasswordWithEmail(email)
             toast.success("Check your email for further instructions")
         } catch (error) {
             toast.error(error.message)
-            console.log(error)
         }
     }
     return (

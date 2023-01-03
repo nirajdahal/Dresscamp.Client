@@ -22,11 +22,9 @@ function Login() {
         dispatch(SET_SHOW_LOADING())
         try {
             const result = await signWithGoogle()
-            console.log(result)
         }
         catch (error) {
             toast.error(error.message)
-            console.log(error.message)
         }
         dispatch(SET_REMOVE_LOADING())
     }
@@ -35,7 +33,6 @@ function Login() {
         dispatch(SET_SHOW_LOADING())
         try {
             const userCredential = await signInUsingEmailAndPassword(email, password)
-            console.log("userCredentials from login component", userCredential)
             toast.success("Sucessfully logged in")
             navigate("/")
         }

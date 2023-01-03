@@ -16,7 +16,6 @@ function Register() {
         else {
             try {
                 const userCredential = await signUpUsingEmailAndPassword(email, password)
-                console.log(userCredential)
                 /* Todo setLoading */
                 toast.success("Sucessfully registered")
                 navigate("/login")
