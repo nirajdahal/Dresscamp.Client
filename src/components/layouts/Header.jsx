@@ -40,7 +40,7 @@ function Header() {
             </ShowOnLogin>
             <AdminOnlyLink>
                 <div className="flex">
-                    <Link to="/admin" className="btn btn-ghost normal-case text-xl">Admin</Link>
+                    <Link to="/admin/home" className="btn btn-ghost normal-case text-xl">Admin</Link>
                 </div>
             </AdminOnlyLink>
             <ShowOnLogout>

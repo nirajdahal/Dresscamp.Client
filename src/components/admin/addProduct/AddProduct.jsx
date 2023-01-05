@@ -1,8 +1,11 @@
 import React from 'react'
 import { useState } from 'react'
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { toast } from 'react-toastify';
 import { uploadImageToFirebase } from '../../../services/ProductService';
+import { useDispatch, useSelector } from 'react-redux';
+import { SET_SHOW_LOADING, SET_REMOVE_LOADING } from '../../../redux/slice/loadingSlice';
+import { AddProductToDb } from '../../../services/ProductService';
+import { useNavigate } from 'react-router-dom';
 const categories = [{
     id: 1,
     name: "Laptop"
@@ -25,7 +28,8 @@ const AddProduct = () => {
         desc: ""
     })
     const [progress, setProgress] = useState(0)
-    const storage = getStorage()
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const handleInputChange = (e) => {
         const { name, value } = e.target
         setProducts({ ...product, [name]: value })
@@ -70,9 +74,27 @@ const AddProduct = () => {
             toast.error(error)
         }
     }
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault()
-        console.log(product)
+        try {
+            dispatch(SET_SHOW_LOADING())
+            await AddProductToDb(product)
+            toast.success("Product created")
+            setProducts({
+                name: "",
+                imageUrl: "",
+                price: 0,
+                category: "",
+                brand: "",
+                desc: ""
+            })
+            setProgress(0)
+            navigate("/admin/view-products")
+        }
+        catch (error) {
+            toast.error(error.message)
+        }
+        dispatch(SET_REMOVE_LOADING())
     }
     return (
         <div>
@@ -106,7 +128,7 @@ const AddProduct = () => {
                         required
                         disabled
                         name="imageUrl"
-                        value={product.imageUrl}
+                        defaultValue={product.imageUrl}
                     />
                 }
                 <br />
@@ -125,7 +147,7 @@ const AddProduct = () => {
                 <select
                     required
                     name="category"
-                    value={product.category}
+                    defaultValue={product.category}
                     onChange={e => handleInputChange(e)}
                     className="select select-bordered select-primary w-full max-w-xs">
                     <option disabled>Pick a category</option>
@@ -148,6 +170,7 @@ const AddProduct = () => {
                 <label>Product Description</label>
                 <textarea
                     required
+                    defaultValue={product.desc}
                     name="desc"
                     type="text"
                     onChange={(e) => handleInputChange(e)}

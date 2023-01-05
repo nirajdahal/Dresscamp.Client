@@ -10,10 +10,10 @@ function Admin() {
     return (
         <>
             <div className="flex">
-                <aside className="w-44 fixed text-left  h-screen bg-slate-700 p-10">
+                <div className="flex-none text-center  h-screen bg-slate-700 p-10">
                     <Sidebar />
-                </aside>
-                <main className="flex-1  text-center">
+                </div>
+                <div className="flex-auto  text-center">
                     <Routes>
                         <Route path="/home" element={<Home />} ></Route>
                         <Route path="/view-products" element={<ViewProducts />} ></Route>
@@ -21,7 +21,7 @@ function Admin() {
                         <Route path="/orders" element={<Orders />} ></Route>
                         <Route path="/*" element={<NotFound />} ></Route>
                     </Routes>
-                </main>
+                </div>
             </div>
         </>
     )
